@@ -1,0 +1,5 @@
+PyGObject
+opencv2-python
+numpy
+Pillow
+matplotlib
