@@ -1,5 +1,5 @@
 
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
 
 
 class MainPane(object):

@@ -1,13 +1,9 @@
 
-from gi.repository import Gtk, Gdk, GdkPixbuf
-
-
+import numpy as np
+from gi.repository import Gtk
 from matplotlib.backends.backend_gtk3agg import (
     FigureCanvasGTK3Agg as FigureCanvas)
-
 from matplotlib.figure import Figure
-
-import numpy as np
 
 
 class Plots(object):

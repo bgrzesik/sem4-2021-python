@@ -1,12 +1,12 @@
 # %%
-import math
 import cv2
-import numpy as np
-import matplotlib
-from matplotlib import pyplot as plt
-from PIL import Image
-from IPython import get_ipython
 import ipywidgets as widgets
+import matplotlib
+import numpy as np
+from IPython import get_ipython
+from PIL import Image
+from matplotlib import pyplot as plt
+
 get_ipython().run_line_magic("matplotlib", "widget")
 
 # 26 x 14
