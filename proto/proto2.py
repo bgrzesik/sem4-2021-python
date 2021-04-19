@@ -87,13 +87,14 @@ class ImageProcessor(object):
             print(get_otsu_threshhold(out, mask))
 
             fig, ax = plt.subplots()
+            fig.suptitle("Mask")
             ax.imshow(mask, cmap="gray", vmin=0, vmax=255)
             fig.show()
 
             _, th = cv2.threshold(out, otsu.threshold, otsu.gray_max,
                                   cv2.THRESH_BINARY)
 
-            # print(th)
+            th[th != 0] = 255
 
             cv2.copyTo(th, mask, dst=out)
             cv2.copyTo(mask, mask, dst=total_mask)
@@ -101,16 +102,18 @@ class ImageProcessor(object):
             th = cv2.bitwise_and(th, mask)
 
             fig, ax = plt.subplots()
+            fig.suptitle("Th")
             ax.imshow(th, cmap="gray", vmin=0, vmax=255)
             fig.show()
 
             fig, ax = plt.subplots()
+            fig.suptitle("Out")
             ax.imshow(out, cmap="gray", vmin=0, vmax=255)
             fig.show()
 
 
 proc = ImageProcessor("./eg/1.jpg")
-proc.settings.add_range(0, 50, 30)
+proc.settings.add_range(0, 90, 96)
 proc.settings.add_range(190, 250, 203)
 proc.settings.add_range(150, 190, 156)
 proc.process()
