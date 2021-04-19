@@ -35,6 +35,35 @@ class ImageProcessorSettings(object):
                                      threshold=threshold))
 
 
+def ostu_function(vals, threshold):
+    left = vals[vals <= threshold]
+    right = vals[vals > threshold]
+
+    assert left.size + right.size == vals.size
+
+    return np.var(left) * left.size + np.var(right) * right.size
+
+
+def get_otsu_threshhold(img, mask):
+    np_mask = np.array(mask) == 255
+    np_out = np.array(img)
+    out = np_out[np_mask]
+
+    if out.size <= 0:
+        return -1
+
+    threshold = np.min(out)
+    val = ostu_function(out, threshold)
+
+    for test in range(np.min(out), np.max(out)):
+        tmp = ostu_function(out, test)
+        if val > tmp:
+            val = tmp
+            threshold = test
+
+    return threshold
+
+
 class ImageProcessor(object):
 
     def __init__(self, img):
@@ -75,7 +104,9 @@ class ImageProcessor(object):
             mask = cv2.inRange(gauss, col_min, col_max)
 
             tmp = cv2.bitwise_and(total_mask, mask)
-            cv2.bitwise_xor(tmp, mask, mask=mask)
+            cv2.bitwise_xor(tmp, mask, dst=mask)
+
+            print(get_otsu_threshhold(out, mask))
 
             fig, ax = plt.subplots()
             ax.imshow(mask, cmap="gray", vmin=0, vmax=255)
@@ -84,10 +115,10 @@ class ImageProcessor(object):
             _, th = cv2.threshold(out, otsu.threshold, otsu.gray_max,
                                   cv2.THRESH_BINARY)
 
-            print(th)
+            # print(th)
 
-            cv2.copyTo(th, mask, out)
-            cv2.copyTo(mask, mask, total_mask)
+            cv2.copyTo(th, mask, dst=out)
+            cv2.copyTo(mask, mask, dst=total_mask)
 
             th = cv2.bitwise_and(th, mask)
 
@@ -101,6 +132,7 @@ class ImageProcessor(object):
 
 
 proc = ImageProcessor("./eg/1.jpg")
-proc.settings.add_range(190, 250, 195)
-proc.settings.add_range(150, 190, 160)
+proc.settings.add_range(0, 50, 30)
+proc.settings.add_range(190, 250, 203)
+proc.settings.add_range(150, 190, 156)
 proc.process()
