@@ -35,31 +35,9 @@ class ImageProcessorSettings(object):
                                      threshold=threshold))
 
 
-def ostu_function(vals, threshold):
-    left = vals[vals <= threshold]
-    right = vals[vals > threshold]
-
-    assert left.size + right.size == vals.size
-
-    return np.var(left) * left.size + np.var(right) * right.size
-
-
 def get_otsu_threshhold(img, mask):
-    np_mask = np.array(mask) == 255
-    np_out = np.array(img)
-    out = np_out[np_mask]
-
-    if out.size <= 0:
-        return -1
-
-    threshold = np.min(out)
-    val = ostu_function(out, threshold)
-
-    for test in range(np.min(out), np.max(out)):
-        tmp = ostu_function(out, test)
-        if val > tmp:
-            val = tmp
-            threshold = test
+    threshold, _ = cv2.threshold(img[mask != 0], 0, 255,
+                                 cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     return threshold
 
