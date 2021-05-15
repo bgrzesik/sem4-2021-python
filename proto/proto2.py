@@ -52,6 +52,7 @@ class ImageProcessor(object):
 
         self.ranges = []
         self.gray = None
+        self.gauss = None
 
         self.settings = ImageProcessorSettings()
 
@@ -59,39 +60,37 @@ class ImageProcessor(object):
         if not self.gray:
             self.gray = cv2.cvtColor(self.orig, cv2.COLOR_RGB2GRAY)
 
-        out = self.gray.copy()
+        if not self.gauss:
+            self.gauss = cv2.GaussianBlur(
+                self.gray, (self.settings.blur, self.settings.blur), 0)
 
-        gauss = cv2.GaussianBlur(
-            self.gray, (self.settings.blur, self.settings.blur), 0)
-
-        col_min = np.array([0])
-        col_max = np.array([0])
-        total_mask = cv2.inRange(gauss, col_min, col_max)
+        out = np.zeros_like(self.gray)
+        total_mask = np.zeros_like(self.gray)
 
         fig, ax = plt.subplots()
-        ax.imshow(out, cmap="gray")
+        ax.imshow(self.gray, cmap="gray")
         fig.show()
 
         fig, ax = plt.subplots()
-        ax.imshow(gauss, cmap="gray", vmin=0, vmax=255)
+        ax.imshow(self.gauss, cmap="gray", vmin=0, vmax=255)
         fig.show()
 
         for otsu in self.settings.ranges:
             col_min = np.array([otsu.gray_min])
             col_max = np.array([otsu.gray_max])
-            mask = cv2.inRange(gauss, col_min, col_max)
+            mask = cv2.inRange(self.gauss, col_min, col_max)
 
             tmp = cv2.bitwise_and(total_mask, mask)
             cv2.bitwise_xor(tmp, mask, dst=mask)
 
-            print(get_otsu_threshhold(out, mask))
+            print(get_otsu_threshhold(self.gray, mask))
 
             fig, ax = plt.subplots()
-            fig.suptitle("Mask")
+            fig.suptitle(f"Mask {otsu}")
             ax.imshow(mask, cmap="gray", vmin=0, vmax=255)
             fig.show()
 
-            _, th = cv2.threshold(out, otsu.threshold, otsu.gray_max,
+            _, th = cv2.threshold(self.gray, otsu.threshold, otsu.gray_max,
                                   cv2.THRESH_BINARY)
 
             th[th != 0] = 255
@@ -111,9 +110,14 @@ class ImageProcessor(object):
             ax.imshow(out, cmap="gray", vmin=0, vmax=255)
             fig.show()
 
+        return out
+
 
 proc = ImageProcessor("./eg/1.jpg")
 proc.settings.add_range(0, 90, 96)
-proc.settings.add_range(190, 250, 203)
+proc.settings.add_range(90, 120, 115)
+proc.settings.add_range(120, 190, 146)
 proc.settings.add_range(150, 190, 156)
+proc.settings.add_range(190, 220, 203)
+proc.settings.add_range(220, 255, 203)
 proc.process()
