@@ -8,17 +8,22 @@ from matplotlib.figure import Figure
 
 class Plots(object):
 
-    def __init__(self, window: "MainWindow"):
+    def __init__(self, window: "MainWindow", ctx: "Context"):
+        self.ctx = ctx
         self.frame: Gtk.ScrolledWindow = window.builder.get_object("figure")
 
         self.fig = Figure(figsize=(2, 2), dpi=100)
         self.ax = self.fig.add_subplot()
 
-        x = np.linspace(0, 2 * np.pi, 100)
-        y = np.sin(x)
-
-        self.ax.plot(x, y)
-
         self.canvas = FigureCanvas(self.fig)
         self.canvas.set_size_request(100, 100)
         self.frame.add_with_viewport(self.canvas)
+
+    def update(self):
+        dest = self.ctx.img
+
+        self.ax.clear()
+
+        x = np.arange(256)
+        y, x = np.histogram(dest, x)
+        self.ax.hist(y, x)
