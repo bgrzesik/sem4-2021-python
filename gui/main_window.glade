@@ -56,7 +56,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="new">
                         <property name="label">gtk-new</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -65,7 +65,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="open">
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -74,7 +74,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="save">
                         <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -83,7 +83,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="save-as">
                         <property name="label">gtk-save-as</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -98,7 +98,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="quit">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -179,7 +179,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem">
+                      <object class="GtkImageMenuItem" id="about">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -227,7 +227,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkImage" id="ranges-image">
+                          <object class="GtkImage" id="regions-image">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="stock">gtk-missing-image</property>

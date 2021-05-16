@@ -18,7 +18,7 @@ class Toolbar(object):
 
     def refresh_ranges(self):
         self.ranges.clear()
-
+        self.ctx.regions=None
         for i, rn in enumerate(self.ctx.processor.settings.ranges):
             i = i == self.selected
             self.ranges.append([rn.gray_min, rn.gray_max, rn.threshold, i])

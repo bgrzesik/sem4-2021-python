@@ -35,6 +35,11 @@ class MainPane(object):
             self.src_pixbuf = self.to_pixbuf(img)
             self.src_image.set_from_pixbuf(self.src_pixbuf)
 
+        if self.ctx.regions is not None:
+            img = cv2.cvtColor(self.ctx.regions, cv2.COLOR_BGR2RGB)
+            self.regions_pixbuf = self.to_pixbuf(img)
+            self.regions_image.set_from_pixbuf(self.regions_pixbuf)
+
         if self.ctx.dest is not None:
             img = cv2.cvtColor(self.ctx.dest, cv2.COLOR_GRAY2RGB)
             self.dest_pixbuf = self.to_pixbuf(img)

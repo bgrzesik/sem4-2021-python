@@ -7,6 +7,7 @@ from gi.repository import Gtk
 from gui.mainpane import MainPane
 from gui.toolbar import Toolbar
 from gui.plots import Plots
+from gui.menu import Menu
 
 from context import Context
 
@@ -27,6 +28,7 @@ class MainWindow(object):
         self.main_pane = MainPane(self, self.ctx)
         self.toolbar = Toolbar(self, self.ctx)
         self.plots = Plots(self, self.ctx)
+        self.menu= Menu(self,self.ctx)
 
         self.window.connect("destroy", self.on_destroy)
         self.window.show_all()
