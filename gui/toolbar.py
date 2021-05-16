@@ -1,4 +1,3 @@
-
 from gi.repository import Gtk
 from processor import OtsuRange
 
@@ -18,7 +17,6 @@ class Toolbar(object):
 
     def refresh_ranges(self):
         self.ranges.clear()
-        self.ctx.regions=None
         for i, rn in enumerate(self.ctx.processor.settings.ranges):
             i = i == self.selected
             self.ranges.append([rn.gray_min, rn.gray_max, rn.threshold, i])
@@ -67,8 +65,8 @@ class Toolbar(object):
 
         ranges = self.ctx.processor.settings.ranges
         for row in reversed(tree_iter):
-            row = row.get_indices()[0]
-            ranges.pop(row)
+            range_row = row.get_indices()[0]
+            ranges.pop(range_row)
 
         if self.selected_cell:
             self.selected_cell.set_active(False)
@@ -155,3 +153,6 @@ class Toolbar(object):
         self.refresh_ranges()
         self.window.update()
         self.update_selected()
+
+
+

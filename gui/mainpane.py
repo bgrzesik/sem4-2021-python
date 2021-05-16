@@ -1,4 +1,3 @@
-
 from gi.repository import Gtk, GdkPixbuf
 
 from processor import ImageProcessor

@@ -1,4 +1,3 @@
-
 import numpy as np
 from gi.repository import Gtk
 from matplotlib.backends.backend_gtk3agg import (
@@ -21,12 +20,11 @@ class Plots(object):
         self.frame.add_with_viewport(self.canvas)
 
     def update(self):
-        dest = cv2.cvtColor(self.ctx.img, cv2.COLOR_RGB2GRAY)
+        dest = self.ctx.processor.gray
 
         self.ax.clear()
 
         x = np.arange(256)
         y, x = np.histogram(dest, x)
-        self.ax.hist(x[:-1],x,weights=y)
+        self.ax.hist(x[:-1], x, weights=y)
         self.canvas.draw()
-

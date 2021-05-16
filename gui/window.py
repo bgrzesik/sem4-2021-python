@@ -18,7 +18,6 @@ class MainWindow(object):
         pass
 
     def start(self):
-
         self.builder = Gtk.Builder()
         self.builder.add_from_file("./gui/main_window.glade")
         self.window: Gtk.Widget = self.builder.get_object("main-window")
@@ -28,7 +27,7 @@ class MainWindow(object):
         self.main_pane = MainPane(self, self.ctx)
         self.toolbar = Toolbar(self, self.ctx)
         self.plots = Plots(self, self.ctx)
-        self.menu= Menu(self,self.ctx)
+        self.menu = Menu(self, self.ctx)
 
         self.window.connect("destroy", self.on_destroy)
         self.window.show_all()

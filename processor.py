@@ -3,6 +3,9 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import *
 
+COLOURS = [[106, 161, 19], [28, 89, 237], [148, 237, 5], [237, 66, 28], [161, 38, 11], [161, 130, 19], [0, 240, 204],
+           [237, 187, 5], [237, 28, 237], [163, 0, 163]]
+
 
 @dataclass
 class OtsuRange(object):
@@ -32,7 +35,7 @@ def get_otsu_threshhold(img, mask):
 
 class ImageProcessor(object):
 
-    def __init__(self, img,context):
+    def __init__(self, img):
         if isinstance(img, str):
             self.orig = cv2.imread(img)
         else:
@@ -41,9 +44,9 @@ class ImageProcessor(object):
         self.ranges = []
         self.gray = None
         self.gauss = None
-        self.context=context
+        self.out_regions = None
         self.settings = ImageProcessorSettings()
-        self.colours=[[106,161,19],[28,89,237],[148,237,5],[237,66,28],[161,38,11],[161,130,19],[0,240,204],[237,187,5],[237,28,237],[163,0,163]]
+
     def process(self):
         if self.gray is None:
             self.gray = cv2.cvtColor(self.orig, cv2.COLOR_RGB2GRAY)
@@ -51,14 +54,13 @@ class ImageProcessor(object):
         if self.gauss is None:
             self.gauss = cv2.GaussianBlur(
                 self.gray, (self.settings.blur, self.settings.blur), 0)
-
-        if self.context.regions is None:
-            self.context.regions= cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
+        if self.out_regions is None:
+            self.out_regions = cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
 
         out = np.zeros_like(self.gray)
         total_mask = np.zeros_like(self.gray)
 
-        colour_it=0
+        colour_it = 0
         for otsu in self.settings.ranges:
             col_min = np.array([otsu.gray_min])
             col_max = np.array([otsu.gray_max])
@@ -67,7 +69,7 @@ class ImageProcessor(object):
             tmp = cv2.bitwise_and(total_mask, mask)
             cv2.bitwise_xor(tmp, mask, dst=mask)
 
-            self.context.regions[mask==255] =self.colours[colour_it]
+            self.out_regions[mask == 255] = COLOURS[colour_it]
 
             print(get_otsu_threshhold(self.gray, mask))
 
@@ -80,5 +82,5 @@ class ImageProcessor(object):
             cv2.copyTo(mask, mask, dst=total_mask)
 
             th = cv2.bitwise_and(th, mask)
-            colour_it=(colour_it+1)%len(self.colours)
-        return out
+            colour_it = (colour_it + 1) % len(COLOURS)
+        return out, self.out_regions
