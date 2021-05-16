@@ -8,7 +8,7 @@
     <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="gray">
-    <property name="upper">256</property>
+    <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
     <signal name="value-changed" handler="update_gray" swapped="no"/>
@@ -26,7 +26,7 @@
     </columns>
   </object>
   <object class="GtkAdjustment" id="thresh">
-    <property name="upper">256</property>
+    <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
     <signal name="value-changed" handler="update_thresh" swapped="no"/>

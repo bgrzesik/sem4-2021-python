@@ -9,9 +9,11 @@ class Context(object):
         self.processor = None
         self.dest = None
         self.regions= None
+        self.file_name=None
 
     def select_img(self, img):
         self.file_name=img
+        self.regions=None
         self.img = cv2.imread(img)
         self.processor = ImageProcessor(img,self)
 
