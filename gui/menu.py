@@ -1,5 +1,6 @@
 import gi
 from gi.repository import Gtk, GdkPixbuf
+
 gi.require_version("Gtk", "3.0")
 import cv2
 import os
@@ -11,25 +12,7 @@ class Menu(object):
         self.window = window
         self.context = ctx
 
-        self.accepted_extensions=["jpg","jpeg","png","tif","tiff"]
-
-        self.quit = window.builder.get_object("quit")
-        self.quit.connect("activate", window.on_destroy)
-
-        self.new = window.builder.get_object("new")  # temporary until it will be different from open
-        self.new.connect("activate", self.open_file)
-
-        self.open = window.builder.get_object("open")
-        self.open.connect("activate", self.open_file)
-
-        self.save = window.builder.get_object("save")
-        self.save.connect("activate", self.save_file)
-
-        self.save_as = window.builder.get_object("save-as")
-        self.save_as.connect("activate", self.save_file_as)
-
-        self.about = window.builder.get_object("about")
-        self.about.connect("activate", self.info_popup)
+        self.accepted_extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
 
     def open_file(self, *args):
         dialog = Gtk.FileChooserDialog(
@@ -59,7 +42,7 @@ class Menu(object):
         result = self.context.file_name
         result = result.split(".")
 
-        result[-2]+="_out"
+        result[-2] += "_out"
         result = '.'.join(result)
         print(result)
         cv2.imwrite(result, self.context.dest)
@@ -78,25 +61,25 @@ class Menu(object):
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
 
-            dialog_window=Gtk.MessageDialog(dialog,message_type=Gtk.MessageType.QUESTION,
-                                                     flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                                     buttons=Gtk.ButtonsType.OK_CANCEL,
-                                                     title="Podaj nazwę pliku" )
+            dialog_window = Gtk.MessageDialog(dialog, message_type=Gtk.MessageType.QUESTION,
+                                              flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                              buttons=Gtk.ButtonsType.OK_CANCEL,
+                                              title="Podaj nazwę pliku")
 
             dialog_box = dialog_window.get_content_area()
 
             entry = Gtk.Entry()
             entry.set_text("Example.jpg")
-            entry.set_size_request(250,50)
+            entry.set_size_request(250, 50)
             dialog_box.pack_end(entry, True, True, 0)
             dialog_window.show_all()
-            entry_response=dialog_window.run()
-            pureFile=entry.get_text()
+            entry_response = dialog_window.run()
+            pureFile = entry.get_text()
             dialog_window.destroy()
             if entry_response == Gtk.ResponseType.OK and self.validate_text(pureFile):
-                separator="/"
-                if os.name=="nt":
-                    separator="\\"
+                separator = "/"
+                if os.name == "nt":
+                    separator = "\\"
                 cv2.imwrite(dialog.get_filename() + separator + pureFile, self.context.dest)
             else:
                 pass
@@ -130,7 +113,6 @@ class Menu(object):
         filter_any.add_mime_type("image/tiff")
         dialog.add_filter(filter_any)
 
-    def validate_text(self,file_text):
-        splitted=file_text.split(".")
+    def validate_text(self, file_text):
+        splitted = file_text.split(".")
         return splitted[-1] in self.accepted_extensions
-

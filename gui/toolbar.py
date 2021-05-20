@@ -13,8 +13,6 @@ class Toolbar(object):
         self.selected_cell = None
         self.selected = None
 
-        window.builder.connect_signals(self)
-
     def refresh_ranges(self):
         self.ranges.clear()
         for i, rn in enumerate(self.ctx.processor.settings.ranges):
@@ -153,6 +151,3 @@ class Toolbar(object):
         self.refresh_ranges()
         self.window.update()
         self.update_selected()
-
-
-

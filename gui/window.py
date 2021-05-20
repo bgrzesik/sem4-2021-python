@@ -8,7 +8,7 @@ from gui.mainpane import MainPane
 from gui.toolbar import Toolbar
 from gui.plots import Plots
 from gui.menu import Menu
-
+from gui.handler_find import HandlerFinder
 from context import Context
 
 
@@ -25,10 +25,11 @@ class MainWindow(object):
         self.ctx = Context()
 
         self.main_pane = MainPane(self, self.ctx)
+        self.menu = Menu(self, self.ctx)
         self.toolbar = Toolbar(self, self.ctx)
         self.plots = Plots(self, self.ctx)
-        self.menu = Menu(self, self.ctx)
 
+        self.builder.connect_signals(HandlerFinder([self.main_pane, self.menu, self.toolbar, self.plots, self]))
         self.window.connect("destroy", self.on_destroy)
         self.window.show_all()
 
