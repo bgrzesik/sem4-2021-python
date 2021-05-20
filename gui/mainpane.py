@@ -17,7 +17,7 @@ class MainPane(object):
         self.regions_image: Gtk.Image = \
             window.builder.get_object("regions-image")
         self.grayscale_image: Gtk.Image = \
-            window.builder.get_object("src-grayscale")
+            window.builder.get_object("grayscale-image")
 
         self.src_pixbuf = None
         self.grayscale_pixbuf = None

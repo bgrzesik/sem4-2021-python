@@ -13,6 +13,11 @@ class Menu(object):
         self.context = ctx
 
         self.accepted_extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
+        self.view_stack: Gtk.Stack= \
+            window.builder.get_object("stack1")
+
+    def switch_page(self,child):
+        self.view_stack.set_visible_child(child)
 
     def open_file(self, *args):
         dialog = Gtk.FileChooserDialog(

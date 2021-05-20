@@ -131,6 +131,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Source</property>
                         <property name="use-underline">True</property>
+                        <signal name="activate" handler="switch_page" object="src-image" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -139,6 +140,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Grayscale</property>
                         <property name="use-underline">True</property>
+                        <signal name="activate" handler="switch_page" object="grayscale-image" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -147,6 +149,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Regions</property>
                         <property name="use-underline">True</property>
+                        <signal name="activate" handler="switch_page" object="regions-image" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -155,6 +158,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Destination</property>
                         <property name="use-underline">True</property>
+                        <signal name="activate" handler="switch_page" object="dest-image" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -221,7 +225,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkImage" id="src-grayscale">
+                          <object class="GtkImage" id="grayscale-image">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="stock">gtk-missing-image</property>
