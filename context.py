@@ -8,8 +8,11 @@ class Context(object):
         self.img = None
         self.processor = None
         self.dest = None
+        self.regions = None
+        self.file_name = None
 
     def select_img(self, img):
+        self.file_name = img
         self.img = cv2.imread(img)
         self.processor = ImageProcessor(img)
 
@@ -17,4 +20,4 @@ class Context(object):
         if self.img is None:
             return
 
-        self.dest = self.processor.process()
+        self.dest, self.regions = self.processor.process()

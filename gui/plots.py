@@ -1,13 +1,9 @@
-
-from gi.repository import Gtk, Gdk, GdkPixbuf
-
-
+import numpy as np
+from gi.repository import Gtk
 from matplotlib.backends.backend_gtk3agg import (
     FigureCanvasGTK3Agg as FigureCanvas)
-
 from matplotlib.figure import Figure
-
-import numpy as np
+import cv2
 
 
 class Plots(object):
@@ -24,10 +20,11 @@ class Plots(object):
         self.frame.add_with_viewport(self.canvas)
 
     def update(self):
-        dest = self.ctx.img
+        dest = self.ctx.processor.gray
 
         self.ax.clear()
 
         x = np.arange(256)
         y, x = np.histogram(dest, x)
-        self.ax.hist(y, x)
+        self.ax.hist(x[:-1], x, weights=y)
+        self.canvas.draw()
