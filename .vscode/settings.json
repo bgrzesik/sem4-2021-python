@@ -1,7 +1,0 @@
-{
-    "python.pythonPath": "venv/bin/python",
-    "python.formatting.autopep8Args": [
-        "--ignore",
-        "E402"
-    ]
-}
