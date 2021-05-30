@@ -20,7 +20,7 @@ class Plots(object):
         self.frame.add_with_viewport(self.canvas)
 
     def update(self):
-        dest = self.ctx.processor.gray
+        dest = self.ctx.gray
 
         self.ax.clear()
 
