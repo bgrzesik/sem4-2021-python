@@ -1,7 +1,6 @@
 import gi
 from gi.repository import Gtk, GdkPixbuf
 
-gi.require_version("Gtk", "3.0")
 import cv2
 import os
 
@@ -18,6 +17,13 @@ class Menu(object):
 
     def switch_page(self,child):
         self.view_stack.set_visible_child(child)
+
+
+    def open_range(self,*args):
+        print("open range")
+
+    def save_range(self,*args):
+        print("save range")
 
     def open_file(self, *args):
         dialog = Gtk.FileChooserDialog(
@@ -94,7 +100,7 @@ class Menu(object):
         dialog.destroy()
 
     def info_popup(self, *args):
-        dialog = Gtk.MessageDialog(buttons=Gtk.ButtonsType.OK,
+        dialog = Gtk.MessageDialog(parent=None,buttons=Gtk.ButtonsType.OK,
                                    message_format="Program powstał w ramach realizacji projektu z języka Python. Autorami są Bartłomiej Grzesik oraz Władysław Cholewa")
         dialog.connect("response", self.dialog_response)
         dialog.show()

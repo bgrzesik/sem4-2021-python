@@ -13,6 +13,16 @@
     <property name="page-increment">10</property>
     <signal name="value-changed" handler="update_gray" swapped="no"/>
   </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-floppy</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkListStore" id="ranges">
     <columns>
       <!-- column-name min -->
@@ -66,13 +76,13 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="open">
-                        <property name="label">gtk-open</property>
+                      <object class="GtkImageMenuItem" id="open-range">
+                        <property name="label">Wczytaj obszary</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="use-stock">True</property>
-                        <signal name="activate" handler="open_file" swapped="no"/>
+                        <property name="image">image2</property>
+                        <property name="use-stock">False</property>
+                        <signal name="activate" handler="open_range" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -93,6 +103,16 @@
                         <property name="use-underline">True</property>
                         <property name="use-stock">True</property>
                         <signal name="activate" handler="save_file_as" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="gtk-save-range">
+                        <property name="label" translatable="yes">Zapisz obszary</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="image">image1</property>
+                        <property name="use-stock">False</property>
+                        <signal name="activate" handler="save_range" swapped="no"/>
                       </object>
                     </child>
                     <child>

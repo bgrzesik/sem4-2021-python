@@ -97,9 +97,9 @@ class Toolbar(object):
         gray = gray.get_value()
 
         d = gray - (ranges[idx].gray_min + ranges[idx].gray_max) // 2
-        ranges[idx].gray_min += d
-        ranges[idx].gray_max += d
 
+        ranges[idx].gray_min = int(min(max(ranges[idx].gray_min+d,0),255))
+        ranges[idx].gray_max = int(min(max(ranges[idx].gray_max+d,0),255))
         self.refresh_ranges()
         self.window.update()
         self.update_selected()

@@ -54,8 +54,8 @@ class ImageProcessor(object):
         if self.gauss is None:
             self.gauss = cv2.GaussianBlur(
                 self.gray, (self.settings.blur, self.settings.blur), 0)
-        if self.out_regions is None:
-            self.out_regions = cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
+
+        self.out_regions = cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
 
         out = np.zeros_like(self.gray)
         total_mask = np.zeros_like(self.gray)
