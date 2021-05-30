@@ -32,8 +32,11 @@ class Toolbar(object):
         self.refresh_ranges()
 
     def update_selected(self, *args):
+        blur = self.builder.get_object("blur")
         gray = self.builder.get_object("gray")
         thresh = self.builder.get_object("thresh")
+
+        blur.set_value(self.ctx.settings.blur)
 
         if self.selected_cell is not None:
             idx = self.selected
@@ -74,6 +77,13 @@ class Toolbar(object):
 
         self.refresh_ranges()
         self.update_selected()
+
+    def update_blur(self, blur):
+        blur = int(blur.get_value())
+        blur -= 1 - blur % 2
+
+        with self.ctx.change_settings() as settings:
+            settings.blur = blur
 
     def update_thresh(self, threshold):
         idx = self.selected
