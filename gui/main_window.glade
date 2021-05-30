@@ -500,7 +500,7 @@
                             <property name="enable-grid-lines">both</property>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="ranges-selection">
-                                <property name="mode">none</property>
+                                <property name="mode">browse</property>
                                 <signal name="changed" handler="update_selected" object="__glade_unnamed_28" swapped="no"/>
                               </object>
                             </child>

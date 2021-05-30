@@ -35,7 +35,7 @@ class Toolbar(object):
         gray = self.builder.get_object("gray")
         thresh = self.builder.get_object("thresh")
 
-        range_new = self.builder.get_object("range-new")
+        range_add = self.builder.get_object("range-add")
         range_up = self.builder.get_object("range-up")
         range_down = self.builder.get_object("range-down")
         range_delete = self.builder.get_object("range-delete")
@@ -46,13 +46,14 @@ class Toolbar(object):
 
         blur.set_value(self.ctx.settings.blur)
 
-        if self.selected is not None:
+        if self.ctx.file_name and self.selected is not None:
             idx = self.selected
             rn = self.ctx.settings.ranges[idx]
 
             gray.set_value((rn.gray_min + rn.gray_max) // 2)
             thresh.set_value(rn.threshold)
             
+            range_add.set_sensitive(not self.ctx.settings.has_full_coverage())
             range_up.set_sensitive(idx > 0)
             range_down.set_sensitive(idx < len(self.ctx.settings.ranges) - 1)
 
@@ -60,6 +61,9 @@ class Toolbar(object):
                 widget.set_sensitive(True)
 
         else:
+            range_add.set_sensitive(self.ctx.file_name is not None \
+                and not self.ctx.settings.has_full_coverage())
+
             gray.set_value(0)
             thresh.set_value(0)
 
