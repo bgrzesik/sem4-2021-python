@@ -27,6 +27,20 @@ class ImageProcessorSettings(object):
                                      threshold=threshold))
     def clear_range(self):
         self.ranges.clear()
+    
+    def has_full_coverage(self):
+        ranges = self.ranges.copy()
+        ranges.sort(key=lambda e: e.gray_min)
+
+        last = 0 
+
+        for r in ranges:
+            if last < r.gray_min - 1:
+                return False
+
+            last = r.gray_max
+
+        return last >= 255
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, ImageProcessorSettings):

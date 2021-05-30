@@ -28,6 +28,7 @@ class MainWindow(object):
         self.menu = Menu(self, self.ctx)
         self.toolbar = Toolbar(self, self.ctx)
         self.plots = Plots(self, self.ctx)
+        self.update_plots = True
 
         self.builder.connect_signals(HandlerFinder([self.main_pane, self.menu, self.toolbar, self.plots, self]))
         self.window.connect("destroy", self.on_destroy)
@@ -37,9 +38,12 @@ class MainWindow(object):
 
 
     def post_process(self):
-        self.toolbar.refresh_ranges()
+        self.toolbar.update_toolbar()
         self.main_pane.update()
-        # self.plots.update()
+
+        if self.update_plots:
+            self.plots.update()
+            self.update_plots = False
 
     def on_destroy(self, *args):
         Gtk.main_quit()
