@@ -85,7 +85,7 @@ class Menu(object):
     def save_json_file(self,path):
         with open(path,"w") as file:
             ranges=[]
-            for range in self.context.processor.settings.ranges:
+            for range in self.context.settings.ranges:
                 ranges.append((range.gray_min,range.gray_max,range.threshold))
             json.dump(ranges,file)
 
