@@ -24,6 +24,8 @@ class ImageProcessorSettings(object):
         self.ranges.append(OtsuRange(gray_min=gray_min,
                                      gray_max=gray_max,
                                      threshold=threshold))
+    def clear_range(self):
+        self.ranges.clear()
 
 
 def get_otsu_threshhold(img, mask):
@@ -84,3 +86,4 @@ class ImageProcessor(object):
             th = cv2.bitwise_and(th, mask)
             colour_it = (colour_it + 1) % len(COLOURS)
         return out, self.out_regions
+

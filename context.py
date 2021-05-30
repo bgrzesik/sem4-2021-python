@@ -16,6 +16,10 @@ class Context(object):
         self.img = cv2.imread(img)
         self.processor = ImageProcessor(img)
 
+
+    def save_img(self,path):
+        cv2.imwrite(path, self.dest)
+
     def process(self):
         if self.img is None:
             return
