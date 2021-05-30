@@ -1,3 +1,4 @@
+from threading import setprofile
 from gi.repository import Gtk
 from processor import ImageProcessorSettings, OtsuRange
 from context import Context
@@ -9,25 +10,21 @@ class Toolbar(object):
         self.ctx = ctx
         self.window = window
         self.builder = window.builder
-        self.ranges = window.builder.get_object("ranges")
 
-        self.selected_cell = None
         self.selected = None
 
         self.update_selected()
 
     def refresh_ranges(self):
-        self.ranges.clear()
+        ranges = self.window.builder.get_object("ranges")
+        ranges.clear()
+
         for i, rn in enumerate(self.ctx.settings.ranges):
             i = i == self.selected
-            self.ranges.append([rn.gray_min, rn.gray_max, rn.threshold, i])
+            ranges.append([rn.gray_min, rn.gray_max, rn.threshold, i])
+
 
     def select_row(self, cell, idx):
-        if self.selected_cell is not None:
-            self.selected_cell.set_active(False)
-
-        self.selected_cell = cell
-        self.selected_cell.set_active(True)
         self.selected = int(idx)
 
         self.update_selected()
@@ -49,7 +46,7 @@ class Toolbar(object):
 
         blur.set_value(self.ctx.settings.blur)
 
-        if self.selected_cell is not None:
+        if self.selected is not None:
             idx = self.selected
             rn = self.ctx.settings.ranges[idx]
 
@@ -74,11 +71,7 @@ class Toolbar(object):
 
         with self.ctx.change_settings() as settings:
             settings.ranges.append(OtsuRange(gray_min, gray_max, threshold))
-
-        if self.selected_cell:
-            self.selected_cell.set_active(False)
-            self.selected_cell = None
-            self.selected = None
+            self.selected = len(settings.ranges) - 1
 
         self.refresh_ranges()
         self.update_selected()
@@ -87,10 +80,33 @@ class Toolbar(object):
         with self.ctx.change_settings() as settings:
             settings.ranges.pop(self.selected)
 
-            self.selected_cell.set_active(False)
-            self.selected_cell = None
-            self.selected = None
+            if len(settings.ranges) > 0:
+                if self.selected == 0:
+                    self.selected = 0
+                else:
+                    self.selected -= 1
+            else:
+                self.selected = None
+            
 
+        self.refresh_ranges()
+        self.update_selected()
+
+    def move_range_up(self, *args):
+        with self.ctx.change_settings() as settings:
+            otsu = settings.ranges.pop(self.selected)
+            self.selected -= 1
+            settings.ranges.insert(self.selected, otsu)
+
+        self.refresh_ranges()
+        self.update_selected()
+
+    def move_range_down(self, *args):
+        with self.ctx.change_settings() as settings:
+            otsu = settings.ranges.pop(self.selected)
+            self.selected += 1
+            settings.ranges.insert(self.selected, otsu)
+    
         self.refresh_ranges()
         self.update_selected()
 
