@@ -402,7 +402,7 @@
                         <property name="receives-default">True</property>
                         <property name="use-stock">True</property>
                         <property name="always-show-image">True</property>
-                        <signal name="pressed" handler="delete_range" object="ranges-selection" swapped="no"/>
+                        <signal name="pressed" handler="delete_range" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

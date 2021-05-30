@@ -83,15 +83,10 @@ class Toolbar(object):
         self.refresh_ranges()
         self.update_selected()
 
-    def delete_range(self, selection):
-        _, tree_iter = selection.get_selected_rows()
-
+    def delete_range(self, *args):
         with self.ctx.change_settings() as settings:
-            for row in reversed(tree_iter):
-                range_row = row.get_indices()[0]
-                settings.ranges.pop(range_row)
+            settings.ranges.pop(self.selected)
 
-        if self.selected_cell:
             self.selected_cell.set_active(False)
             self.selected_cell = None
             self.selected = None
