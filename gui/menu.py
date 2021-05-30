@@ -30,7 +30,6 @@ class Menu(object):
     def open_file_response(self,path):
         self.context.select_img(path)
         self.window.toolbar.refresh_ranges()
-        self.window.update()
 
     def save_file(self, *args):
         result = self.context.file_name
@@ -97,12 +96,12 @@ class Menu(object):
             print(type(loaded[0]))
             print(type(loaded[0][0]))
             if isinstance(loaded,list) and len(loaded)>0:
-                self.context.processor.settings.clear_range()
-                for range in loaded:
-                    if isinstance(range, list) and len(range)==3 and isinstance(range[0],int) and isinstance(range[1],int) and isinstance(range[2],int):
-                        self.context.processor.settings.add_range(range[0],range[1],range[2])
+                with self.context.change_settings() as settings:
+                    settings.clear_range()
+                    for range in loaded:
+                        if isinstance(range, list) and len(range)==3 and isinstance(range[0],int) and isinstance(range[1],int) and isinstance(range[2],int):
+                            settings.add_range(range[0],range[1],range[2])
                 self.window.toolbar.refresh_ranges()
-                self.window.update()
 
     def file_save_dialog(self,validation_function,creator_function):
         dialog = Gtk.FileChooserDialog(
