@@ -4,6 +4,7 @@ from gi.repository import Gtk, GdkPixbuf
 gi.require_version("Gtk", "3.0")
 import cv2
 import os
+from context import Context
 
 
 class Menu(object):
@@ -36,7 +37,6 @@ class Menu(object):
         if response == Gtk.ResponseType.OK:
             self.context.select_img(dialog.get_filename())
             self.window.toolbar.refresh_ranges()
-            self.window.update()
 
         elif response == Gtk.ResponseType.CANCEL:
             pass
