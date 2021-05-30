@@ -3,7 +3,7 @@ from gi.repository import GLib
 import cv2
 import threading
 import dataclasses
-from processor import ImageProcessor, ImageProcessorSettings
+from processor import ImageProcessor, ImageProcessorSettings, get_otsu_threshhold
 from contextlib import contextmanager
 from copy import deepcopy
 
@@ -23,20 +23,36 @@ class WorkerThread(threading.Thread):
                 while self.ctx.file_name == self.ctx.current_file_name and \
                         self.ctx.settings == self.ctx.current_settings:
                     self.condvar.wait()
-                    print("Worker woken up")
-
-            print("Updating...")
 
             with self.ctx.lock:
                 settings = deepcopy(self.ctx.settings)
                 file_name = self.ctx.file_name
+                img = self.ctx.img
 
-            processor = ImageProcessor(self.ctx.img)
+
+            processor = ImageProcessor(img)
             processor.settings = settings
-            dest, regions = processor.process()
+            
+            if img is not None:
+                dest, regions = processor.process()
+            else:
+                dest, regions = None, None
             
             with self.ctx.lock:
                 self.ctx.current_settings = settings
+
+                # write Otsu threshold to those ranges which didn't change
+                if len(settings.ranges) == len(self.ctx.current_settings.ranges):
+                    for new, cur in zip(settings.ranges, self.ctx.settings.ranges):
+                        if new.user_set or cur.user_set:
+                            continue
+
+                        if (new.gray_min, new.gray_max) != (cur.gray_min, cur.gray_max):
+                            continue
+
+                        cur.threshold = new.threshold
+
+
                 self.ctx.current_file_name = file_name
                 self.ctx.gray = processor.gray
                 self.ctx.dest = dest

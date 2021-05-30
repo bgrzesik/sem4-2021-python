@@ -13,6 +13,7 @@ class OtsuRange(object):
     gray_max: int
 
     threshold: int
+    user_set: bool = False
 
 
 @dataclass
@@ -82,7 +83,8 @@ class ImageProcessor(object):
 
             self.out_regions[mask == 255] = COLOURS[colour_it]
 
-            print(get_otsu_threshhold(self.gray, mask))
+            if not otsu.user_set:
+                otsu.threshold = get_otsu_threshhold(self.gray, mask)
 
             _, th = cv2.threshold(self.gray, otsu.threshold, otsu.gray_max,
                                   cv2.THRESH_BINARY)

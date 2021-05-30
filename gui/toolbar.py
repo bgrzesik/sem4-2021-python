@@ -82,6 +82,7 @@ class Toolbar(object):
 
         threshold = threshold.get_value()
         with self.ctx.change_settings() as settings:
+            settings.ranges[idx].user_set = True
             settings.ranges[idx].threshold = threshold
 
         self.refresh_ranges()
@@ -142,6 +143,7 @@ class Toolbar(object):
             return
 
         with self.ctx.change_settings() as settings:
+            settings.ranges[idx].user_set = True
             settings.ranges[idx].threshold = text
 
         self.refresh_ranges()
