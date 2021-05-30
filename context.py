@@ -104,4 +104,6 @@ class Context(object):
             with self.worker.condvar:
                 self.worker.condvar.notify()
     
+    def save_img(self,path):
+        cv2.imwrite(path, self.dest)
     

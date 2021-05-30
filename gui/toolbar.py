@@ -97,8 +97,8 @@ class Toolbar(object):
 
         with self.ctx.change_settings() as settings:
             d = gray - (settings.ranges[idx].gray_min + settings.ranges[idx].gray_max) // 2
-            settings.ranges[idx].gray_min += d
-            settings.ranges[idx].gray_max += d
+            settings.ranges[idx].gray_min = int(min(max(settings.ranges[idx].gray_min + d, 0), 255))
+            settings.ranges[idx].gray_max = int(min(max(settings.ranges[idx].gray_max + d, 0), 255))
 
         self.refresh_ranges()
         self.update_selected()

@@ -25,6 +25,8 @@ class ImageProcessorSettings(object):
         self.ranges.append(OtsuRange(gray_min=gray_min,
                                      gray_max=gray_max,
                                      threshold=threshold))
+    def clear_range(self):
+        self.ranges.clear()
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, ImageProcessorSettings):
@@ -66,8 +68,8 @@ class ImageProcessor(object):
         if self.gauss is None:
             self.gauss = cv2.GaussianBlur(
                 self.gray, (self.settings.blur, self.settings.blur), 0)
-        if self.out_regions is None:
-            self.out_regions = cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
+
+        self.out_regions = cv2.cvtColor(self.gray, cv2.COLOR_GRAY2RGB)
 
         out = np.zeros_like(self.gray)
         total_mask = np.zeros_like(self.gray)
@@ -97,3 +99,4 @@ class ImageProcessor(object):
             th = cv2.bitwise_and(th, mask)
             colour_it = (colour_it + 1) % len(COLOURS)
         return out, self.out_regions
+
