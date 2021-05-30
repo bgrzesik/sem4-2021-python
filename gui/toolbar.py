@@ -1,5 +1,6 @@
 from gi.repository import Gtk
-from processor import OtsuRange
+from processor import ImageProcessorSettings, OtsuRange
+from context import Context
 
 
 class Toolbar(object):
@@ -15,7 +16,7 @@ class Toolbar(object):
 
     def refresh_ranges(self):
         self.ranges.clear()
-        for i, rn in enumerate(self.ctx.processor.settings.ranges):
+        for i, rn in enumerate(self.ctx.settings.ranges):
             i = i == self.selected
             self.ranges.append([rn.gray_min, rn.gray_max, rn.threshold, i])
 
@@ -36,7 +37,7 @@ class Toolbar(object):
 
         if self.selected_cell is not None:
             idx = self.selected
-            rn = self.ctx.processor.settings.ranges[idx]
+            rn = self.ctx.settings.ranges[idx]
 
             gray.set_value((rn.gray_min + rn.gray_max) // 2)
             thresh.set_value(rn.threshold)
@@ -46,8 +47,9 @@ class Toolbar(object):
 
     def add_range(self, ranges):
         gray_min, gray_max, threshold = 0, 0, 0
-        ranges = self.ctx.processor.settings.ranges
-        ranges.append(OtsuRange(gray_min, gray_max, threshold))
+
+        with self.ctx.change_settings() as settings:
+            settings.ranges.append(OtsuRange(gray_min, gray_max, threshold))
 
         if self.selected_cell:
             self.selected_cell.set_active(False)
@@ -55,16 +57,15 @@ class Toolbar(object):
             self.selected = None
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def delete_range(self, selection):
         _, tree_iter = selection.get_selected_rows()
 
-        ranges = self.ctx.processor.settings.ranges
-        for row in reversed(tree_iter):
-            range_row = row.get_indices()[0]
-            ranges.pop(range_row)
+        with self.ctx.change_settings() as settings:
+            for row in reversed(tree_iter):
+                range_row = row.get_indices()[0]
+                settings.ranges.pop(range_row)
 
         if self.selected_cell:
             self.selected_cell.set_active(False)
@@ -72,7 +73,6 @@ class Toolbar(object):
             self.selected = None
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def update_thresh(self, threshold):
@@ -80,12 +80,11 @@ class Toolbar(object):
         if idx is None:
             return
 
-        ranges = self.ctx.processor.settings.ranges
         threshold = threshold.get_value()
-        ranges[idx].threshold = threshold
+        with self.ctx.change_settings() as settings:
+            settings.ranges[idx].threshold = threshold
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def update_gray(self, gray):
@@ -93,15 +92,14 @@ class Toolbar(object):
         if idx is None:
             return
 
-        ranges = self.ctx.processor.settings.ranges
         gray = gray.get_value()
 
-        d = gray - (ranges[idx].gray_min + ranges[idx].gray_max) // 2
-        ranges[idx].gray_min += d
-        ranges[idx].gray_max += d
+        with self.ctx.change_settings() as settings:
+            d = gray - (settings.ranges[idx].gray_min + settings.ranges[idx].gray_max) // 2
+            settings.ranges[idx].gray_min += d
+            settings.ranges[idx].gray_max += d
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def range_min_edited(self, model, idx, text):
@@ -113,11 +111,10 @@ class Toolbar(object):
         except:
             return
 
-        ranges = self.ctx.processor.settings.ranges
-        ranges[idx].gray_min = text
+        with self.ctx.change_settings() as settings:
+            settings.ranges[idx].gray_min = text
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def range_max_edited(self, model, idx, text):
@@ -129,11 +126,10 @@ class Toolbar(object):
         except:
             return
 
-        ranges = self.ctx.processor.settings.ranges
-        ranges[idx].gray_max = text
+        with self.ctx.change_settings() as settings:
+            settings.ranges[idx].gray_max = text
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()
 
     def range_threshold_edited(self, model, idx, text):
@@ -145,9 +141,8 @@ class Toolbar(object):
         except:
             return
 
-        ranges = self.ctx.processor.settings.ranges
-        ranges[idx].threshold = text
+        with self.ctx.change_settings() as settings:
+            settings.ranges[idx].threshold = text
 
         self.refresh_ranges()
-        self.window.update()
         self.update_selected()

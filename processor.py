@@ -25,6 +25,17 @@ class ImageProcessorSettings(object):
                                      gray_max=gray_max,
                                      threshold=threshold))
 
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, ImageProcessorSettings):
+            return False
+        
+        o: ImageProcessorSettings = o
+
+        if o.blur != self.blur or len(o.ranges) != len(self.ranges):
+            return False
+
+        return all([ l == r for l, r in zip(self.ranges, o.ranges) ])
+
 
 def get_otsu_threshhold(img, mask):
     threshold, _ = cv2.threshold(img[mask != 0], 0, 255,

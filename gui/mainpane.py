@@ -34,7 +34,7 @@ class MainPane(object):
     def update(self):
         if self.ctx.img is not None:
             img = cv2.cvtColor(self.ctx.img, cv2.COLOR_BGR2RGB)
-            grayscale = cv2.cvtColor(self.ctx.processor.gray, cv2.COLOR_GRAY2RGB)
+            grayscale = cv2.cvtColor(self.ctx.gray, cv2.COLOR_GRAY2RGB)
             self.src_pixbuf = self.to_pixbuf(img)
             self.src_image.set_from_pixbuf(self.src_pixbuf)
             self.grayscale_pixbuf = self.to_pixbuf(grayscale)
