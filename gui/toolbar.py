@@ -14,6 +14,8 @@ class Toolbar(object):
         self.selected_cell = None
         self.selected = None
 
+        self.update_selected()
+
     def refresh_ranges(self):
         self.ranges.clear()
         for i, rn in enumerate(self.ctx.settings.ranges):
@@ -36,6 +38,15 @@ class Toolbar(object):
         gray = self.builder.get_object("gray")
         thresh = self.builder.get_object("thresh")
 
+        range_new = self.builder.get_object("range-new")
+        range_up = self.builder.get_object("range-up")
+        range_down = self.builder.get_object("range-down")
+        range_delete = self.builder.get_object("range-delete")
+
+        slider_gray = self.builder.get_object("gray-slider")
+        slider_thresh = self.builder.get_object("threshold-slider")
+
+
         blur.set_value(self.ctx.settings.blur)
 
         if self.selected_cell is not None:
@@ -44,9 +55,19 @@ class Toolbar(object):
 
             gray.set_value((rn.gray_min + rn.gray_max) // 2)
             thresh.set_value(rn.threshold)
+            
+            range_up.set_sensitive(idx > 0)
+            range_down.set_sensitive(idx < len(self.ctx.settings.ranges) - 1)
+
+            for widget in [range_delete, slider_gray, slider_thresh]:
+                widget.set_sensitive(True)
+
         else:
             gray.set_value(0)
             thresh.set_value(0)
+
+            for widget in [range_up, range_down, range_delete, slider_gray, slider_thresh]:
+                widget.set_sensitive(False)
 
     def add_range(self, ranges):
         gray_min, gray_max, threshold = 0, 0, 0

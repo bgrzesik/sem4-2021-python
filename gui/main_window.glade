@@ -348,7 +348,7 @@
                     <property name="can-focus">False</property>
                     <property name="halign">center</property>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="range-add">
                         <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
@@ -364,7 +364,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="range-up">
                         <property name="label">gtk-go-up</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
@@ -379,7 +379,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="range-down">
                         <property name="label">gtk-go-down</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
@@ -395,7 +395,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="range-delete">
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
@@ -442,7 +442,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale">
+                  <object class="GtkScale" id="gray-slider">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="adjustment">gray</property>
@@ -459,7 +459,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Threshhold</property>
+                    <property name="label" translatable="yes">Threshold</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -468,7 +468,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale">
+                  <object class="GtkScale" id="threshold-slider">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="adjustment">thresh</property>
