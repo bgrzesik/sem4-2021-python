@@ -13,6 +13,7 @@ class OtsuRange(object):
     gray_max: int
 
     threshold: int
+    user_set: bool = False
 
 
 @dataclass
@@ -26,6 +27,17 @@ class ImageProcessorSettings(object):
                                      threshold=threshold))
     def clear_range(self):
         self.ranges.clear()
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, ImageProcessorSettings):
+            return False
+        
+        o: ImageProcessorSettings = o
+
+        if o.blur != self.blur or len(o.ranges) != len(self.ranges):
+            return False
+
+        return all([ l == r for l, r in zip(self.ranges, o.ranges) ])
 
 
 def get_otsu_threshhold(img, mask):
@@ -73,7 +85,8 @@ class ImageProcessor(object):
 
             self.out_regions[mask == 255] = COLOURS[colour_it]
 
-            print(get_otsu_threshhold(self.gray, mask))
+            if not otsu.user_set:
+                otsu.threshold = get_otsu_threshhold(self.gray, mask)
 
             _, th = cv2.threshold(self.gray, otsu.threshold, otsu.gray_max,
                                   cv2.THRESH_BINARY)

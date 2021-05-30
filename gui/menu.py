@@ -2,6 +2,7 @@ import gi
 from gi.repository import Gtk, GdkPixbuf
 
 import os
+from context import Context
 import json
 
 class Menu(object):
@@ -17,14 +18,11 @@ class Menu(object):
     def switch_page(self,child):
         self.view_stack.set_visible_child(child)
 
-
     def open_range(self,*args):
         self.open_file_dialog(self.add_json_filter,self.open_json_file)
-
+        
     def save_range(self,*args):
         self.file_save_dialog(self.validate_json_name,self.save_json_file)
-
-
 
     def open_file(self, *args):
         self.open_file_dialog(self.add_image_filters,self.open_file_response)
