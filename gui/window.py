@@ -38,8 +38,7 @@ class MainWindow(object):
 
 
     def post_process(self):
-        self.toolbar.update_selected()
-        self.toolbar.refresh_ranges()
+        self.toolbar.update_toolbar()
         self.main_pane.update()
 
         if self.update_plots:
