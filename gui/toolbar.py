@@ -88,7 +88,8 @@ class Toolbar(object):
                 widget.set_sensitive(False)
 
     def add_range(self, ranges):
-        gray_min, gray_max, threshold = 0, 0, 0
+        gray_min, gray_max = self.ctx.settings.get_first_gap()
+        threshold = 0
 
         with self.ctx.change_settings() as settings:
             settings.ranges.append(OtsuRange(gray_min, gray_max, threshold))
