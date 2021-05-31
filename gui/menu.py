@@ -13,7 +13,8 @@ class Menu(object):
         self.window = window
         self.context = ctx
 
-        self.accepted_extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
+        self.accepted_extensions = [".jpg", ".jpeg", ".png", ".tif", ".tiff"]
+
         self.view_stack: Gtk.Stack= \
             window.builder.get_object("stack1")
 
@@ -78,12 +79,12 @@ class Menu(object):
         dialog.add_filter(filter_json)
 
     def validate_image_name(self, file_text):
-        splitted = file_text.split(".")
-        return splitted[-1] in self.accepted_extensions
+        rfind_result=file_text.rfind(".")
+        return  rfind_result!=-1 and file_text[rfind_result:] in self.accepted_extensions
 
     def validate_json_name(self,file_text):
-        splitted=file_text.split(".")
-        return splitted[-1]=="json"
+        rfind_result = file_text.rfind(".")
+        return  rfind_result!=-1 and file_text[file_text.rfind("."):]==".json"
 
     def save_json_file(self,path):
         with open(path,"w") as file:
@@ -122,7 +123,11 @@ class Menu(object):
         response = dialog.run()
         if response == Gtk.ResponseType.OK and validation_function(dialog.get_filename()):
             creator_function(dialog.get_filename())
-
+        elif response == Gtk.ResponseType.OK:
+            filter_name=dialog.get_filter().get_name()
+            extension_binding = {"JPEG files": ".jpg", "PNG files": ".png", "TIFF files": ".tiff",
+                                 "JSON files": ".json"}
+            creator_function(dialog.get_filename() + extension_binding[filter_name])
         elif response == Gtk.ResponseType.CANCEL:
             pass
 
