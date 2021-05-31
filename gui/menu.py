@@ -4,8 +4,8 @@ from gi.repository import Gtk, GdkPixbuf
 import os
 from context import Context
 import json
-from dataclasses import dataclass
-
+from dataclasses import dataclass,asdict
+from processor import ImageProcessorSettings,OtsuRange
 
 class Menu(object):
 
@@ -87,23 +87,19 @@ class Menu(object):
 
     def save_json_file(self,path):
         with open(path,"w") as file:
-            ranges=[]
-            #print(json.dump(jsondataclass.to_dict(self.context.settings)))
-            for range in self.context.settings.ranges:
-                ranges.append((range.gray_min,range.gray_max,range.threshold))
-            json.dump(ranges,file)
+            settings=asdict(self.context.settings)
+            json.dump(settings,file)
 
     def open_json_file(self,path):
         with open(path,"r") as file:
             loaded=json.load(file)
 
-            if isinstance(loaded,list) and len(loaded)>0:
-                with self.context.change_settings() as settings:
-                    settings.clear_ranges()
-                    for range in loaded:
-                        if isinstance(range, list) and len(range)==3 and isinstance(range[0],int) and isinstance(range[1],int) and isinstance(range[2],int):
-                            settings.add_range(range[0],range[1],range[2])
-                self.window.toolbar.update_toolbar()
+            self.context.settings.blur=loaded["blur"]
+            self.context.settings.clear_ranges()
+            for range in loaded["ranges"]:
+                self.context.settings.ranges.append(OtsuRange(**range))
+            print(self.context.settings)
+            self.window.toolbar.update_toolbar()
 
     def file_save_dialog(self,validation_function,creator_function,filter_adder):
         dialog = Gtk.FileChooserDialog(
