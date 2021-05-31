@@ -25,7 +25,7 @@ class ImageProcessorSettings(object):
         self.ranges.append(OtsuRange(gray_min=gray_min,
                                      gray_max=gray_max,
                                      threshold=threshold))
-    def clear_range(self):
+    def clear_ranges(self):
         self.ranges.clear()
     
     def has_full_coverage(self):

@@ -1,9 +1,11 @@
 import gi
 from gi.repository import Gtk, GdkPixbuf
 
-import os
 from context import Context
+import os
 import json
+import dataclasses
+from processor import ImageProcessorSettings,OtsuRange
 
 class Menu(object):
 
@@ -11,7 +13,8 @@ class Menu(object):
         self.window = window
         self.context = ctx
 
-        self.accepted_extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
+        self.accepted_extensions = [".jpg", ".jpeg", ".png", ".tif", ".tiff"]
+
         self.view_stack: Gtk.Stack= \
             window.builder.get_object("stack1")
 
@@ -22,7 +25,7 @@ class Menu(object):
         self.open_file_dialog(self.add_json_filter,self.open_json_file)
         
     def save_range(self,*args):
-        self.file_save_dialog(self.validate_json_name,self.save_json_file)
+        self.file_save_dialog(self.validate_json_name,self.save_json_file,self.add_json_filter)
 
     def open_file(self, *args):
         self.open_file_dialog(self.add_image_filters,self.open_file_response)
@@ -42,7 +45,7 @@ class Menu(object):
         self.context.save_img(result)
 
     def save_file_as(self, *args):
-        self.file_save_dialog(self.validate_image_name,self.context.save_img)
+        self.file_save_dialog(self.validate_image_name,self.context.save_img,self.add_image_filters)
 
     def info_popup(self, *args):
         dialog = Gtk.MessageDialog(parent=None,buttons=Gtk.ButtonsType.OK,
@@ -76,70 +79,55 @@ class Menu(object):
         dialog.add_filter(filter_json)
 
     def validate_image_name(self, file_text):
-        splitted = file_text.split(".")
-        return splitted[-1] in self.accepted_extensions
+        rfind_result=file_text.rfind(".")
+        return  rfind_result!=-1 and file_text[rfind_result:] in self.accepted_extensions
 
     def validate_json_name(self,file_text):
-        splitted=file_text.split(".")
-        return splitted[-1]=="json"
+        rfind_result = file_text.rfind(".")
+        return  rfind_result!=-1 and file_text[file_text.rfind("."):]==".json"
 
     def save_json_file(self,path):
         with open(path,"w") as file:
-            ranges=[]
-            for range in self.context.settings.ranges:
-                ranges.append((range.gray_min,range.gray_max,range.threshold))
-            json.dump(ranges,file)
+            settings=dataclasses.asdict(self.context.settings)
+            json.dump(settings,file)
 
     def open_json_file(self,path):
         with open(path,"r") as file:
             loaded=json.load(file)
-            print(type(loaded))
-            print(type(loaded[0]))
-            print(type(loaded[0][0]))
-            if isinstance(loaded,list) and len(loaded)>0:
-                with self.context.change_settings() as settings:
-                    settings.clear_range()
-                    for range in loaded:
-                        if isinstance(range, list) and len(range)==3 and isinstance(range[0],int) and isinstance(range[1],int) and isinstance(range[2],int):
-                            settings.add_range(range[0],range[1],range[2])
-                self.window.toolbar.update_toolbar()
 
-    def file_save_dialog(self,validation_function,creator_function):
+            ranges = []
+            for rang in loaded["ranges"]:
+                ranges.append(OtsuRange(**rang))
+
+            loaded["ranges"] = ranges
+
+            with self.context.change_settings() as settings:
+                for field, value in loaded.items():
+                    setattr(settings, field, value)
+
+            print(self.context.settings)
+            self.window.toolbar.update_toolbar()
+
+    def file_save_dialog(self,validation_function,creator_function,filter_adder):
         dialog = Gtk.FileChooserDialog(
-            title="Please choose a folder",
+            title="Please choose a file",
             transient_for=self.window.window,
-            action=Gtk.FileChooserAction.SELECT_FOLDER,
+            action=Gtk.FileChooserAction.SAVE,
         )
         dialog.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK
         )
+        filter_adder(dialog)
         dialog.set_default_size(800, 400)
 
         response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-
-            dialog_window = Gtk.MessageDialog(dialog, message_type=Gtk.MessageType.QUESTION,
-                                              flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                              buttons=Gtk.ButtonsType.OK_CANCEL,
-                                              title="Podaj nazwę pliku")
-
-            dialog_box = dialog_window.get_content_area()
-
-            entry = Gtk.Entry()
-            entry.set_text("Example.*")
-            entry.set_size_request(250, 50)
-            dialog_box.pack_end(entry, True, True, 0)
-            dialog_window.show_all()
-            entry_response = dialog_window.run()
-            pureFile = entry.get_text()
-            dialog_window.destroy()
-            if entry_response == Gtk.ResponseType.OK and validation_function(pureFile):
-                separator = "/"
-                if os.name == "nt":
-                    separator = "\\"
-                creator_function(dialog.get_filename() + separator + pureFile)
-            else:
-                pass
+        if response == Gtk.ResponseType.OK and validation_function(dialog.get_filename()):
+            creator_function(dialog.get_filename())
+        elif response == Gtk.ResponseType.OK:
+            filter_name=dialog.get_filter().get_name()
+            extension_binding = {"JPEG files": ".jpg", "PNG files": ".png", "TIFF files": ".tiff",
+                                 "JSON files": ".json"}
+            creator_function(dialog.get_filename() + extension_binding[filter_name])
         elif response == Gtk.ResponseType.CANCEL:
             pass
 
