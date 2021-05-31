@@ -1,10 +1,10 @@
 import gi
 from gi.repository import Gtk, GdkPixbuf
 
-import os
 from context import Context
+import os
 import json
-from dataclasses import dataclass,asdict
+import dataclasses
 from processor import ImageProcessorSettings,OtsuRange
 
 class Menu(object):
@@ -87,17 +87,23 @@ class Menu(object):
 
     def save_json_file(self,path):
         with open(path,"w") as file:
-            settings=asdict(self.context.settings)
+            settings=dataclasses.asdict(self.context.settings)
             json.dump(settings,file)
 
     def open_json_file(self,path):
         with open(path,"r") as file:
             loaded=json.load(file)
 
-            self.context.settings.blur=loaded["blur"]
-            self.context.settings.clear_ranges()
-            for range in loaded["ranges"]:
-                self.context.settings.ranges.append(OtsuRange(**range))
+            ranges = []
+            for rang in loaded["ranges"]:
+                ranges.append(OtsuRange(**rang))
+
+            loaded["ranges"] = ranges
+
+            with self.context.change_settings() as settings:
+                for field, value in loaded.items():
+                    setattr(settings, field, value)
+
             print(self.context.settings)
             self.window.toolbar.update_toolbar()
 
