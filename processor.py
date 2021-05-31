@@ -41,6 +41,30 @@ class ImageProcessorSettings(object):
             last = r.gray_max
 
         return last >= 255
+    
+    def get_first_gap(self):
+        ranges = self.ranges.copy()
+        ranges.sort(key=lambda e: e.gray_min)
+
+        if len(ranges) == 0:
+            return 0, 255
+            
+        elif ranges[0].gray_min != 0:
+            return 0, ranges[0].gray_max
+        
+        left, right = 0, 255
+
+        for rang in ranges:
+            if left < rang.gray_min - 1:
+                right = rang.gray_min
+                break
+            
+            left = rang.gray_max
+
+        return left, right
+        
+
+
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, ImageProcessorSettings):
