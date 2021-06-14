@@ -106,4 +106,9 @@ class Context(object):
     
     def save_img(self,path):
         cv2.imwrite(path, self.dest)
+
+    def image_loaded(self):
+        if self.img is None:
+            return False
+        return True
     

@@ -30,7 +30,8 @@ class MainWindow(object):
         self.plots = Plots(self, self.ctx)
         self.update_plots = True
 
-        self.builder.connect_signals(HandlerFinder([self.main_pane, self.menu, self.toolbar, self.plots, self]))
+        self.builder.connect_signals(HandlerFinder([self.main_pane, self.menu,
+                                                    self.toolbar, self.plots, self]))
         self.window.connect("destroy", self.on_destroy)
         self.window.show_all()
 

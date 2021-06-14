@@ -23,10 +23,12 @@ class Menu(object):
         self.view_stack.set_visible_child(child)
 
     def open_range(self, *args):
-        self.open_file_dialog(self.add_json_filter, self.open_json_file)
+        if self.context.image_loaded():
+            self.open_file_dialog(self.add_json_filter, self.open_json_file)
 
     def save_range(self, *args):
-        self.file_save_dialog(self.validate_json_name, self.save_json_file, self.add_json_filter)
+        if self.context.image_loaded():
+            self.file_save_dialog(self.validate_json_name, self.save_json_file, self.add_json_filter)
 
     def open_file(self, *args):
         self.open_file_dialog(self.add_image_filters, self.open_file_response)
@@ -40,20 +42,24 @@ class Menu(object):
         self.window.toolbar.update_toolbar()
 
     def save_file(self, *args):
-        result = self.context.file_name
-        result = result.split(".")
+        if self.context.image_loaded():
+            result = self.context.file_name
+            result = result.split(".")
 
-        result[-2] += "_out"
-        result = '.'.join(result)
-        print(result)
-        self.context.save_img(result)
+            result[-2] += "_out"
+            result = '.'.join(result)
+            print(result)
+            self.context.save_img(result)
 
     def save_file_as(self, *args):
-        self.file_save_dialog(self.validate_image_name, self.context.save_img, self.add_image_filters)
+        if self.context.image_loaded():
+            self.file_save_dialog(self.validate_image_name, self.context.save_img, self.add_image_filters)
 
     def info_popup(self, *args):
         dialog = Gtk.MessageDialog(parent=None, buttons=Gtk.ButtonsType.OK,
-                                   message_format="Program powstał w ramach realizacji projektu z języka Python. Autorami są Bartłomiej Grzesik oraz Władysław Cholewa")
+                                   message_format="Program powstał w ramach realizacji projektu z języka Python. "
+                                                  "Autorami są Bartłomiej Grzesik oraz Władysław Cholewa")
+
         dialog.connect("response", self.dialog_response)
         dialog.show()
 
