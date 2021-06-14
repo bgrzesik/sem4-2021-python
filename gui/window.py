@@ -21,7 +21,7 @@ class MainWindow(object):
         self.builder = Gtk.Builder()
         self.builder.add_from_file("./gui/main_window.glade")
         self.window: Gtk.Widget = self.builder.get_object("main-window")
-
+        self.window.set_title("Image Thresholder")
         self.ctx = Context(self.post_process)
 
         self.main_pane = MainPane(self, self.ctx)
@@ -35,7 +35,6 @@ class MainWindow(object):
         self.window.show_all()
 
         Gtk.main()
-
 
     def post_process(self):
         self.toolbar.update_toolbar()

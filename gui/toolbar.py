@@ -19,6 +19,9 @@ class Toolbar(object):
     def select_row(self, cell, idx):
         self.update_toolbar()
 
+    def clear_selected(self):
+        self.selected = None
+
     def update_selected(self, *args):
         if self.ignore_select_changes:
             return
@@ -60,7 +63,6 @@ class Toolbar(object):
         slider_gray = self.builder.get_object("gray-slider")
         slider_thresh = self.builder.get_object("threshold-slider")
 
-
         blur.set_value(self.ctx.settings.blur)
 
         if self.ctx.file_name and self.selected is not None:
@@ -69,7 +71,7 @@ class Toolbar(object):
 
             gray.set_value((rn.gray_min + rn.gray_max) // 2)
             thresh.set_value(rn.threshold)
-            
+
             range_add.set_sensitive(not self.ctx.settings.has_full_coverage())
             range_up.set_sensitive(idx > 0)
             range_down.set_sensitive(idx < len(self.ctx.settings.ranges) - 1)
@@ -79,7 +81,7 @@ class Toolbar(object):
 
         else:
             range_add.set_sensitive(self.ctx.file_name is not None \
-                and not self.ctx.settings.has_full_coverage())
+                                    and not self.ctx.settings.has_full_coverage())
 
             gray.set_value(0)
             thresh.set_value(0)
@@ -94,7 +96,7 @@ class Toolbar(object):
         with self.ctx.change_settings() as settings:
             settings.ranges.append(OtsuRange(gray_min, gray_max, threshold))
             self.selected = len(settings.ranges) - 1
-            
+
         self.update_toolbar()
 
     def delete_range(self, *args):
@@ -108,7 +110,6 @@ class Toolbar(object):
                     self.selected -= 1
             else:
                 self.selected = None
-            
 
         self.update_toolbar()
 
@@ -125,7 +126,7 @@ class Toolbar(object):
             otsu = settings.ranges.pop(self.selected)
             self.selected += 1
             settings.ranges.insert(self.selected, otsu)
-    
+
         self.update_toolbar()
 
     def update_blur(self, blur):
