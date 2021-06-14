@@ -1,5 +1,5 @@
 PyGObject
-opencv2-python
+opencv-python
 numpy
 Pillow
 matplotlib
