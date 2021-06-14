@@ -38,7 +38,7 @@ class ImageProcessorSettings(object):
             if last < r.gray_min - 1:
                 return False
 
-            last = r.gray_max
+            last = max(last, r.gray_max)
 
         return last >= 255
     
@@ -62,9 +62,6 @@ class ImageProcessorSettings(object):
             left = rang.gray_max
 
         return left, right
-        
-
-
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, ImageProcessorSettings):
@@ -136,5 +133,6 @@ class ImageProcessor(object):
 
             th = cv2.bitwise_and(th, mask)
             colour_it = (colour_it + 1) % len(COLOURS)
+
         return out, self.out_regions
 
